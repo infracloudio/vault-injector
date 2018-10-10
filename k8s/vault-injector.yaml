@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: vault-injector
+  name: vault-injector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-injector
+  template:
+    metadata:
+      labels:
+        app: vault-injector
+    spec:
+      containers:
+      - env:
+        - name: VAULT_TOKEN
+          value: 3e4a5ba1-kube-422b-d1db-844979cab098
+        - name: VAULT_ADDR
+          value: vault
+        image: prasadg193/vault-injector:0.1
+        imagePullPolicy: Always
+        name: vault-injector
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: vault-injector
+  name: vault-injector
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: vault-injector
